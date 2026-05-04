@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostFlow</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="shortcut icon" href="../img/CostFlow.png" type="image/x-icon">
+
+</head>
+
+<body>
+    <main class="app-bar">
+        <button class="btn-menu">☰</button>
+        <strong class="logo">CostFlow</strong>
+    </main>
+
+    <h1 class="titulo-pagina">Crie um Novo Orçamento</h1>
+
+    <section class="formulario">
+        <div class="campo">
+            <label>Nome da Atividade</label>
+            <input type="text" id="nome-atv" placeholder="Digite o nome">
+        </div>
+
+        <div class="campo">
+            <label>Valor</label>
+            <input type="number" id="valor-atv" placeholder="R$ 0,00">
+        </div>
+
+        <div class="campo">
+            <label>Tempo</label>
+            <input type="text" id="tempo-atv" placeholder="Ex: 2h">
+        </div>
+
+        <button class="btn-adicionar">+ Adicionar Atividade</button>
+    </section>
+
+    <section class="listagem">
+        <header class="listagem-topo">
+            <div class="contagem">
+                <h2>Atividades</h2>
+                <span class="badge" id="total-atividades">0</span>
+            </div>
+            <div class="botoes-acoes">
+                <button class="btn-limpar">Limpar tudo</button>
+                <button class="btn-gerar">Gerar Orçamento</button>
+            </div>
+        </header>
+
+        <div class="container-atividades" id="lista">
+            <p class="feedback-vazio">Nenhuma atividade adicionada ainda.</p>
+            <p class="feedback-vazio">Preencha o formulário acima para começar.</p>
+        </div>
+    </section>
+
+    <section class="orcamento-painel" id="orcamento-painel" style="display:none;">
+        <div class="orcamento-header">
+            <h2 class="orcamento-titulo">Orçamento Gerado</h2>
+            <span class="orcamento-data" id="orcamento-data"></span>
+        </div>
+
+        <div class="orcamento-empresa">
+            <p><strong>CostFlow</strong> — Gestão de Custos de Projetos</p>
+        </div>
+
+        <table class="orcamento-tabela" id="orcamento-tabela">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Atividade</th>
+                    <th>Valor/h</th>
+                    <th>Duração</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="orcamento-corpo"></tbody>
+        </table>
+
+        <div class="orcamento-total-row">
+            <span>Total Geral</span>
+            <span id="orcamento-total-geral" class="orcamento-total-valor"></span>
+        </div>
+
+        <div class="orcamento-acoes">
+            <button class="btn-pdf" id="btn-pdf" onclick="baixarPDF()">⬇ Baixar PDF</button>
+            <button class="btn-fechar-orc" onclick="fecharOrcamento()">✕ Fechar</button>
+        </div>
+    </section>
+
+    <footer class="rodape">
+        <p><strong>© 2026 CostFlow | Todos os direitos reservados</strong></p>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
