@@ -35,6 +35,22 @@
             <input type="text" id="tempo-atv" placeholder="Ex: 2h">
         </div>
 
+        <div class="configuracoes-inline">
+            <div class="campo">
+                <label>Desconto (%)</label>
+                <input type="number" id="desconto-porcentagem" placeholder="0" min="0" max="100">
+            </div>
+
+            <div class="campo">
+                <label>Urgência</label>
+                <select id="urgencia-nivel">
+                    <option value="1">Sem Urgência (Padrão)</option>
+                    <option value="1.2">Com Urgência (+20%)</option>
+                    <option value="1.5">Muita Urgência (+50%)</option>
+                </select>
+            </div>
+        </div>
+
         <button class="btn-adicionar">+ Adicionar Atividade</button>
     </section>
 
@@ -42,7 +58,8 @@
         <header class="listagem-topo">
             <div class="contagem">
                 <h2>Atividades</h2>
-                <span class="badge" id="total-atividades">0</span>
+                <span class="badge" id="total-atividades" title="Quantidade de atividades">0</span>
+                <span class="badge-total" id="total-geral-live" title="Valor total estimado">R$ 0,00</span>
             </div>
             <div class="botoes-acoes">
                 <button class="btn-limpar">Limpar tudo</button>
@@ -79,8 +96,23 @@
             <tbody id="orcamento-corpo"></tbody>
         </table>
 
+        <div class="orcamento-detalhes-finais">
+            <div class="orcamento-linha">
+                <span>Subtotal</span>
+                <span id="orcamento-subtotal"></span>
+            </div>
+            <div class="orcamento-linha" id="linha-urgencia" style="display:none;">
+                <span>Acréscimo Urgência</span>
+                <span id="orcamento-urgencia"></span>
+            </div>
+            <div class="orcamento-linha" id="linha-desconto" style="display:none;">
+                <span>Desconto</span>
+                <span id="orcamento-desconto"></span>
+            </div>
+        </div>
+
         <div class="orcamento-total-row">
-            <span>Total Geral</span>
+            <span>Total Final</span>
             <span id="orcamento-total-geral" class="orcamento-total-valor"></span>
         </div>
 

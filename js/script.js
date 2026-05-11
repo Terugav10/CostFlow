@@ -7,6 +7,8 @@ const badge = document.getElementById('total-atividades');
 const inputNome = document.getElementById('nome-atv');
 const inputValor = document.getElementById('valor-atv');
 const inputTempo = document.getElementById('tempo-atv');
+const inputDesconto = document.getElementById('desconto-porcentagem');
+const selectUrgencia = document.getElementById('urgencia-nivel');
 
 let atividades = [];
 
@@ -41,12 +43,16 @@ function renderizar() {
     } else {
         lista.innerHTML = '';
         atividades.forEach((atv, index) => {
+            const multiplicadorUrgencia = parseFloat(selectUrgencia.value) || 1;
+            const descontoPorcentagem = parseFloat(inputDesconto.value) || 0;
+            const valorAjustado = (atv.total * multiplicadorUrgencia) * (1 - (descontoPorcentagem / 100));
+
             const item = document.createElement('article');
             item.className = 'item-lista';
             item.innerHTML = `
                 <div>
                     <strong>${atv.nome}</strong> —
-                    <span style="color: #383CFF; font-size: 1.15rem; font-weight: 700;">${formatarMoeda(atv.total)}</span>
+                    <span style="color: #383CFF; font-size: 1.15rem; font-weight: 700;">${formatarMoeda(valorAjustado)}</span>
                 </div>
                 <div style="display:flex;gap:12px;align-items:center;">
                     <button onclick="editarItem(${index})" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;" title="Editar">
@@ -62,7 +68,24 @@ function renderizar() {
     }
 
     badge.innerText = atividades.length;
+
+    // Cálculo do Total Live (com urgência e desconto)
+    const subtotal = atividades.reduce((acc, atv) => acc + atv.total, 0);
+    const multiplicadorUrgencia = parseFloat(selectUrgencia.value) || 1;
+    const descontoPorcentagem = parseFloat(inputDesconto.value) || 0;
+
+    const totalComUrgencia = subtotal * multiplicadorUrgencia;
+    const totalFinal = totalComUrgencia * (1 - (descontoPorcentagem / 100));
+
+    const totalLiveEl = document.getElementById('total-geral-live');
+    if (totalLiveEl) {
+        totalLiveEl.innerText = formatarMoeda(totalFinal);
+    }
 }
+
+// Listeners para atualização em tempo real
+inputDesconto.addEventListener('input', renderizar);
+selectUrgencia.addEventListener('change', renderizar);
 
 btnAdicionar.addEventListener('click', () => {
     const nome = inputNome.value.trim();
@@ -140,6 +163,11 @@ btnGerar.addEventListener('click', () => {
     const painel = document.getElementById('orcamento-painel');
     const corpo = document.getElementById('orcamento-corpo');
     const totalGeralEl = document.getElementById('orcamento-total-geral');
+    const subtotalEl = document.getElementById('orcamento-subtotal');
+    const urgencyEl = document.getElementById('orcamento-urgencia');
+    const discountEl = document.getElementById('orcamento-desconto');
+    const linhaUrgencia = document.getElementById('linha-urgencia');
+    const linhaDesconto = document.getElementById('linha-desconto');
     const dataEl = document.getElementById('orcamento-data');
 
     const agora = new Date();
@@ -148,9 +176,9 @@ btnGerar.addEventListener('click', () => {
     });
 
     corpo.innerHTML = '';
-    let totalGeral = 0;
+    let subtotal = 0;
     atividades.forEach((atv, i) => {
-        totalGeral += atv.total;
+        subtotal += atv.total;
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${i + 1}</td>
@@ -162,7 +190,33 @@ btnGerar.addEventListener('click', () => {
         corpo.appendChild(tr);
     });
 
-    totalGeralEl.textContent = formatarMoeda(totalGeral);
+    // Cálculos de Urgência e Desconto
+    const multiplicadorUrgencia = parseFloat(selectUrgencia.value) || 1;
+    const descontoPorcentagem = parseFloat(inputDesconto.value) || 0;
+
+    const valorUrgencia = subtotal * (multiplicadorUrgencia - 1);
+    const totalComUrgencia = subtotal + valorUrgencia;
+    const valorDesconto = totalComUrgencia * (descontoPorcentagem / 100);
+    const totalFinal = totalComUrgencia - valorDesconto;
+
+    // Atualizar UI do painel
+    subtotalEl.textContent = formatarMoeda(subtotal);
+    
+    if (valorUrgencia > 0) {
+        urgencyEl.textContent = `+ ${formatarMoeda(valorUrgencia)}`;
+        linhaUrgencia.style.display = 'flex';
+    } else {
+        linhaUrgencia.style.display = 'none';
+    }
+
+    if (valorDesconto > 0) {
+        discountEl.textContent = `- ${formatarMoeda(valorDesconto)}`;
+        linhaDesconto.style.display = 'flex';
+    } else {
+        linhaDesconto.style.display = 'none';
+    }
+
+    totalGeralEl.textContent = formatarMoeda(totalFinal);
 
     painel.style.display = 'block';
     painel.scrollIntoView({ behavior: 'smooth', block: 'start' });
